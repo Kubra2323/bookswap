@@ -10,12 +10,12 @@ Course project for COMP 205. This repository is the **P1 skeleton + back-end + C
 
 | Area | State |
 | --- | --- |
-| Email/password sign-in, university-email check, email verification | Implemented |
-| Firestore listings: create, live list, search, mark as sold | Implemented |
-| Firestore security rules (users, books, listings, chats) | Written, not yet tested in the emulator |
+| Email/password sign-in, university-email check, email verification | Code written and view-model unit tested; not yet run against a real Firebase project |
+| Firestore listings: create, live list, search, mark as sold | Code written and view-model unit tested; not yet run against Firestore |
+| Firestore security rules (users, books, listings, chats) | Written; not yet tested in the emulator |
 | Cloud Function `getBookInfo` (Google Books + cache) | Implemented, unit tested with fakes |
-| Cloud Function `getPriceGuide` (range from >= 3 offers + Gemini explanation) | Implemented, logic unit tested |
-| GitHub Actions CI (Flutter analyze/test, functions tests) | Added |
+| Cloud Function `getPriceGuide` (range from >= 3 offers + Gemini explanation) | Price logic and Gemini answer check unit tested; not run end to end |
+| GitHub Actions CI (Flutter analyze/test, functions tests) | Working, green on GitHub |
 | ISBN scan / OCR (ML Kit), chat, photos | Not started (Week 8+) |
 
 Update this table with the real state before you submit.
