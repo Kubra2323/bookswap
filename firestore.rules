@@ -1,0 +1,85 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- helpers -------------------------------------------------------
+    // Keep the email rule in sync with lib/core/validators.dart and functions/src/students.js.
+    function isStudent() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.matches('(?i)^[a-z0-9._%+-]+@(ogr\\.)?agu\\.edu\\.tr$');
+    }
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function validCondition(c) {
+      return c in ['Like new', 'Good', 'Fair', 'Worn'];
+    }
+
+    function validNewListing(d) {
+      return d.keys().hasOnly(['ownerId', 'title', 'isbn', 'edition', 'condition', 'priceTry', 'status', 'isDemo', 'createdAt'])
+        && d.ownerId == request.auth.uid
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 200
+        && d.isbn is string && d.isbn.size() >= 10 && d.isbn.size() <= 13
+        && d.edition is string && d.edition.size() <= 40
+        && validCondition(d.condition)
+        && d.priceTry is int && d.priceTry > 0 && d.priceTry < 100000
+        && d.status == 'active'
+        && d.isDemo is bool
+        && d.createdAt == request.time;
+    }
+
+    // ---- users: each student reads and writes only their own profile ---
+    match /users/{uid} {
+      allow read, write: if isStudent() && isOwner(uid);
+    }
+
+    // ---- books: filled by Cloud Functions (Admin SDK), read-only for clients
+    match /books/{isbn} {
+      allow read: if isStudent();
+      allow write: if false;
+    }
+
+    // ---- listings: anyone verified can read, only the owner changes them
+    match /listings/{listingId} {
+      allow read: if isStudent();
+      allow create: if isStudent() && validNewListing(request.resource.data);
+      // The owner may only flip status to 'sold'. Nothing else can change.
+      allow update: if isStudent()
+        && isOwner(resource.data.ownerId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status == 'sold';
+      allow delete: if isStudent() && isOwner(resource.data.ownerId);
+    }
+
+    // ---- chats: only the two participants -------------------------------
+    match /chats/{chatId} {
+      allow read: if isStudent() && request.auth.uid in resource.data.participants;
+      allow create: if isStudent()
+        && request.resource.data.participants is list
+        && request.resource.data.participants.size() == 2
+        && request.auth.uid in request.resource.data.participants;
+      allow update, delete: if false;
+
+      match /messages/{messageId} {
+        allow read: if isStudent()
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        allow create: if isStudent()
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 1000;
+        allow update, delete: if false;
+      }
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
