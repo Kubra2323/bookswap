@@ -72,4 +72,4 @@ CI runs the same commands on every push and pull request.
 
 - `lib/firebase_options.dart`, `google-services.json`, `.secret.local` and API keys stay out of git.
 - Never paste them or keys into an AI chat.
-- Student names, emails, chats and interview notes are never sent to Gemini.
+- Student names, emails, chats and interview notes are never sent to Gemini. 
