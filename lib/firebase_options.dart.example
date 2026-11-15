@@ -1,0 +1,17 @@
+// TEMPLATE ONLY. Do not put real keys here.
+//
+// Each team member generates their own lib/firebase_options.dart with:
+//   dart pub global activate flutterfire_cli
+//   flutterfire configure
+// The generated file is in .gitignore and must never be committed or pasted into an AI chat.
+// CI copies this template to lib/firebase_options.dart so that `flutter analyze` can run.
+import 'package:firebase_core/firebase_core.dart';
+
+class DefaultFirebaseOptions {
+  static const FirebaseOptions currentPlatform = FirebaseOptions(
+    apiKey: 'placeholder',
+    appId: 'placeholder',
+    messagingSenderId: 'placeholder',
+    projectId: 'placeholder',
+  );
+}

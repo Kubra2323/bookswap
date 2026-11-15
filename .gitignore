@@ -1,0 +1,25 @@
+# Secrets and per-developer Firebase config: NEVER commit these (course rule)
+lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+functions/.secret.local
+functions/.env*
+.firebaserc
+*.jks
+key.properties
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+
+# Node
+node_modules/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
