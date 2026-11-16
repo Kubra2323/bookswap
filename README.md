@@ -18,7 +18,7 @@ Course project for COMP 205. This repository is the **P1 skeleton + back-end + C
 | GitHub Actions CI (Flutter analyze/test, functions tests) | Working, green on GitHub |
 | ISBN scan / OCR (ML Kit), chat, photos | Not started (Week 8+) |
 
-Update this table with the real state before you submit.
+
 
 ## Architecture
 
